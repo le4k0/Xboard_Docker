@@ -39,3 +39,15 @@ docker compose up -d
 ---
 
 请确保在安装和配置过程中遵循以上步骤，以确保 Xboard 的正确安装和运行。
+
+* 贴一个Caddy配置
+```Caddyfile
+[U_DOMAIN] {
+    reverse_proxy http://127.0.0.1:7001 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+    }
+    encode zstd gzip
+}
+```
