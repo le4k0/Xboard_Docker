@@ -1,0 +1,40 @@
+version: '3'
+services:
+  xboard:
+    image: ghcr.io/cedar2025/xboard:latest
+    restart: always
+    volumes:
+      - ./.env:/www/.env
+      - ./data:/www/.docker/.data/
+    ports:
+      - '127.0.0.1:7001:7001'
+    depends_on:
+      - redis
+      - mariadb
+    networks:
+      - xboard-network
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes: 
+      - ./redis:/data
+    networks:
+      - xboard-network
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    restart: always
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes 
+      MARIADB_DATABASE: xboard
+      MARIADB_USER: xboard
+      MARIADB_PASSWORD: [U_PASSWD]
+    networks:
+      - xboard-network
+
+networks:
+  xboard-network:
+    driver: bridge
